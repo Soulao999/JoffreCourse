@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">JoffreCourse</string>
+
+    <string name="title_section1">Accueil</string>
+    <string name="title_section2">Historique</string>
+    <string name="title_section3">Options</string>
+    <string name="title_section4">Statistiques</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_example">JoffreCourse</string>
+
+    <string name="action_settings">Options</string>
+
+    <string name="Accueil_text">JoffreCourse est une application d\'entrainement sportif crée dans le cadre d\'un TPE</string>
+    <string name="Accueil_bouton">Commencer l\'activité</string>
+    <string name="Accueil_erreurLocalisation">Réseau de localisation gps introuvable</string>
+
+    <string name="Options_age">Age:</string>
+    <string name="Options_poids">Poid(kg):</string>
+    <string name="Options_taille">Taille(cm):</string>
+    <string name="Options_valider">Valider</string>
+    <string name="Options_erreur">Vous avez oublié de remplir une information</string>
+    <string name="Options_erreurAgePlus">Vous me paraissez bien vieux. Etes vous un vampire?</string>
+    <string name="Options_erreurAgeMoins">Revenez me voir quand vous quand vous aurez grandi un peu</string>
+    <string name="Options_erreurPoids">Quelle légèreté !!!</string>
+    <string name="Options_erreurTaillePlus">Ohh Mon dieu un géant !!!</string>
+    <string name="Options_erreurTailleMoins">Oh un minimoys :)</string>
+    <string name="Options_enregistre">Vos informations ont été enrégistré avec succès</string>
+</resources>
