@@ -16,6 +16,7 @@
     <string name="Accueil_text">JoffreCourse est une application d\'entrainement sportif crée dans le cadre d\'un TPE</string>
     <string name="Accueil_bouton">Commencer l\'activité</string>
     <string name="Accueil_erreurLocalisation">Réseau de localisation gps introuvable</string>
+    <string name="Accueil_bouton_clicked">Fin de l\'activité</string>
 
     <string name="Options_age">Age:</string>
     <string name="Options_poids">Poid(kg):</string>

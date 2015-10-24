@@ -13,9 +13,7 @@ public class ActivityHistorique {
     private float deniveleMax;
     private int calories;
 
-    public ActivityHistorique(long id, String date, float temps, float distance, float vitesse, float vitesseMax, float vitesseMin, float altitudeMax, float altitudeMin, float deniveleMax, int calories) {
-        super();
-        this.id = id;
+    public ActivityHistorique(String date, float temps, float distance, float vitesse, float vitesseMax, float vitesseMin, float altitudeMax, float altitudeMin, float deniveleMax, int calories) {
         this.date = date;
         this.temps = temps;
         this.distance =distance;
@@ -28,6 +26,7 @@ public class ActivityHistorique {
         this.calories = calories;
 
     }
+    public ActivityHistorique(){};
 
     public long getId() {
         return id;
@@ -107,4 +106,9 @@ public class ActivityHistorique {
         this.calories = calories;
     }
 
+    public String toString(){
+        return "ID: "+ id +" Date: "+ date + " Temps: " + temps + " Distance: "+distance+" Vitesse: "+ vitesse +
+                " VitesseMax: "+vitesseMax+" VitesseMin: "+vitesseMin+" AltitudeMax: "+altitudeMax +" AltitudeMin: "+ altitudeMin+
+                " DéniveléMax: "+deniveleMax+" Calories: "+calories;
+    }
 }

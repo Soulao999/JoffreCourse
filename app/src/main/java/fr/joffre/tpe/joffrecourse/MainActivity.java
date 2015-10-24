@@ -4,16 +4,21 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
+import android.provider.CalendarContract;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -30,6 +35,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Calendar;
+
+import static java.lang.Thread.sleep;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks, View.OnClickListener, android.location.LocationListener {
 
@@ -44,12 +53,13 @@ public class MainActivity extends AppCompatActivity
     private CharSequence mTitle;
 
     private Button b;
-    private TextView tv;
     private double latitude;
     private double longitude;
     private double altitude;
     private float accuracy;
+    private boolean GpsEnabled = true;
     static LocationManager lm;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +76,6 @@ public class MainActivity extends AppCompatActivity
                 (DrawerLayout) findViewById(R.id.drawer_layout));
         b = (Button) findViewById(R.id.startbutton);
         b.setOnClickListener(this);
-        tv = (TextView) findViewById(R.id.Acceuil_textView);
     }
 
     @Override
@@ -145,15 +154,15 @@ public class MainActivity extends AppCompatActivity
         try {
             Log.i("Localisation", lm.getBestProvider(critere, true));
         } catch (NullPointerException e) {
-            Toast.makeText(this, R.string.Accueil_erreurLocalisation, Toast.LENGTH_SHORT).show();
+            Log.i("Localistion", "Gps not enabled");
         }
         String best = lm.getBestProvider(critere, false);
         lm.requestLocationUpdates(best, 10000, 1, this);
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 1, this);
         lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 1, this);
-        Log.i("Localisation GPS", "Start localisation" + String.valueOf(lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)));
-        Log.i("Localisation NETWORK", "Start localisation" + String.valueOf(lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)));
-        Log.i("Localisation BEST", "Start localisation" + String.valueOf(lm.getLastKnownLocation(best)));
+        Log.i("Localisation GPS", "Start localisation " + String.valueOf(lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)));
+        Log.i("Localisation NETWORK", "Start localisation " + String.valueOf(lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)));
+        Log.i("Localisation BEST", "Start localisation " + String.valueOf(lm.getLastKnownLocation(best)));
     }
 
     @Override
@@ -163,17 +172,31 @@ public class MainActivity extends AppCompatActivity
     }
     @Override
     public void onClick(View v) {
+        if(GpsEnabled == true){
+            b.setText("GO !");
+        }
+        else{
+            new AlertDialog.Builder(this)
+            .setCancelable(false)
+            .setIcon(R.drawable.error_image)
+            .setMessage(R.string.Accueil_erreurLocalisation)
+            .setTitle("Erreur de localisation")
+            .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
 
+                }
+            })
+            .show();
+        }
     }
-
     @Override
     public void onLocationChanged(Location location) {
         latitude = location.getLatitude();
         longitude = location.getLongitude();
         altitude = location.getAltitude();
         accuracy = location.getAccuracy();
-        Log.i("Localisation", "Lat: " + latitude + " Lon: " + longitude + " Alt: " + altitude + " acc: "+ accuracy);
-        tv.setText("Localisation: Lat: "+ latitude + " Lon: " + longitude + " Alt: " + altitude + " acc: "+ accuracy);
+        Log.i("Localisation", "Lat: " + latitude + " Lon: " + longitude + " Alt: " + altitude + " acc: " + accuracy);
     }
 
     @Override
@@ -184,16 +207,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onProviderEnabled(String provider) {
         Log.i("Localisation","Enabled");
+        GpsEnabled = true;
     }
 
     @Override
     public void onProviderDisabled(String provider) {
         Log.i("Localisation","Disabled");
+        GpsEnabled = false;
     }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
     public static class PlaceholderFragment extends Fragment {
         /**
          * The fragment argument representing the section number for this
