@@ -61,6 +61,9 @@ public class ActivityHistoriqueBDD {
         //on ferme l'accès à la BDD
         bdd.close();
     }
+    public int getLenght(){
+        return key;
+    }
     public ActivityHistorique getActivity(long id){
         String request = "SELECT * FROM " + TABLE_NAME +" WHERE "+ACTIVITY_KEY +"=?";
         Cursor c = bdd.rawQuery(request, new String[]{String.valueOf(id)});
@@ -78,7 +81,6 @@ public class ActivityHistoriqueBDD {
         ah.setAltitudeMin(c.getFloat(8));
         ah.setDeniveleMax(c.getFloat(9));
         ah.setCalories(c.getInt(10));
-        Log.i("BDD", c.getString(1));
         c.close();
         return ah;
     }
@@ -88,5 +90,4 @@ public class ActivityHistoriqueBDD {
         //Si bug
         //context.deleteDatabase(TABLE_NAME);
     }
-
 }

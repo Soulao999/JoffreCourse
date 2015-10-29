@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content" android:layout_height="wrap_content"
+    android:id="@+id/histo">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Date"
+        android:textSize="20dp"
+        android:id="@+id/Date"
+        android:layout_marginLeft="5dp"
+        android:layout_alignParentTop="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Temps"
+        android:textSize="20dp"
+        android:id="@+id/Temps"
+        android:layout_marginLeft="110dp"
+        android:layout_marginTop="40dp"
+        android:layout_alignParentTop="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Distance"
+        android:textSize="20dp"
+        android:id="@+id/Distance"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="5dp" />
+
+</RelativeLayout>

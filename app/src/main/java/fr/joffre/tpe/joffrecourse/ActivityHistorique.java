@@ -1,5 +1,9 @@
 package fr.joffre.tpe.joffrecourse;
 
+import android.content.Context;
+
+import java.util.ArrayList;
+
 public class ActivityHistorique {
     private long id;
     private String date;
@@ -110,5 +114,16 @@ public class ActivityHistorique {
         return "ID: "+ id +" Date: "+ date + " Temps: " + temps + " Distance: "+distance+" Vitesse: "+ vitesse +
                 " VitesseMax: "+vitesseMax+" VitesseMin: "+vitesseMin+" AltitudeMax: "+altitudeMax +" AltitudeMin: "+ altitudeMin+
                 " DéniveléMax: "+deniveleMax+" Calories: "+calories;
+    }
+    public static ArrayList<ActivityHistorique> getList(Context context) {
+        ArrayList<ActivityHistorique> listPers = new ArrayList<ActivityHistorique>();
+
+        ActivityHistoriqueBDD Bdd = new ActivityHistoriqueBDD(context);
+        Bdd.open();
+        for(int i = 0;i<Bdd.getLenght();i++){
+            listPers.add(Bdd.getActivity(i+1));
+        }
+        Bdd.close();
+        return listPers;
     }
 }

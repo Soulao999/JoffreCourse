@@ -27,7 +27,6 @@ public class Timer extends Thread{
         sec = sec%60;
         int h = min/60;
         min = min%60;
-        Log.i("Convert","Heures: "+String.valueOf(h)+ " Minutes: "+String.valueOf(min)+" Secondes: "+ String.valueOf(sec));
         int Result[] = {h,min,sec};
         return Result;
     }

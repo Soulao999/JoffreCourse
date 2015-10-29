@@ -57,8 +57,19 @@ public class MainActivity extends AppCompatActivity
     private double longitude;
     private double altitude;
     private float accuracy;
+    private float vitesse;
+    private float vitesseMax;
+    private float vitesseMin;
+    private int Time;
+    private String date;
+    private double altitudeMax;
+    private double altitudeMin;
+    private double deniveleMax;
+    private float distance;
     private boolean GpsEnabled = true;
     static LocationManager lm;
+    private boolean running = false;
+    private boolean isFirst = true;
 
 
     @Override
@@ -163,6 +174,9 @@ public class MainActivity extends AppCompatActivity
         Log.i("Localisation GPS", "Start localisation " + String.valueOf(lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)));
         Log.i("Localisation NETWORK", "Start localisation " + String.valueOf(lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)));
         Log.i("Localisation BEST", "Start localisation " + String.valueOf(lm.getLastKnownLocation(best)));
+        if(running){
+            b.setText(R.string.Accueil_bouton_clicked);
+        }
     }
 
     @Override
@@ -172,8 +186,34 @@ public class MainActivity extends AppCompatActivity
     }
     @Override
     public void onClick(View v) {
+        Timer t = new Timer("time");
         if(GpsEnabled == true){
-            b.setText("GO !");
+            if(!running) {
+                running = true;
+                b.setText("GO !");
+                t.start();
+                Calendar calendrier = Calendar.getInstance();
+                int Mois = calendrier.get(Calendar.MONTH)+1;
+                date = String.valueOf(calendrier.get(Calendar.DAY_OF_MONTH) + "/" + String.valueOf(Mois) + "/" + String.valueOf(calendrier.get(Calendar.YEAR)));
+            }
+            else if(running){
+                t.arret();
+                Time = Timer.seconde;
+                //km
+                distance = distance/1000;
+                //km/h
+                vitesseMax = (float) (vitesseMax*(3.6));
+                vitesseMin = (float) (vitesseMin*(3.6));
+                vitesse = (float) (vitesse*(3.6));
+                ActivityHistoriqueBDD Bdd= new ActivityHistoriqueBDD(this);
+                Bdd.open();
+                ActivityHistorique ah = new ActivityHistorique(date, Time, distance, vitesse, vitesseMax, vitesseMin, (float)altitudeMax, (float)altitudeMin, (float)deniveleMax, 80);
+                Bdd.ajouter(ah);
+                b.setText(R.string.Accueil_bouton);
+                Bdd.close();
+                Timer.seconde = 0;
+                running = false;
+            }
         }
         else{
             new AlertDialog.Builder(this)
@@ -192,11 +232,36 @@ public class MainActivity extends AppCompatActivity
     }
     @Override
     public void onLocationChanged(Location location) {
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
-        altitude = location.getAltitude();
-        accuracy = location.getAccuracy();
-        Log.i("Localisation", "Lat: " + latitude + " Lon: " + longitude + " Alt: " + altitude + " acc: " + accuracy);
+        if(running){
+            if(!isFirst){
+                //vitesse m/s
+                //altitude m
+                //distance m
+                if(vitesseMax<location.getSpeed()){vitesseMax = location.getSpeed();}
+                if(vitesseMin>location.getSpeed()){vitesseMin = location.getSpeed();}
+                if(altitudeMax<location.getAltitude()){altitudeMax = location.getAltitude();}
+                if(altitudeMin>location.getAltitude()){altitudeMin = location.getAltitude();}
+                if (altitude < location.getAltitude() & deniveleMax < location.getAltitude() - altitude) {deniveleMax = location.getAltitude() - altitude;}
+                if (altitude > location.getAltitude()& deniveleMax < altitude - location.getAltitude()) {deniveleMax = altitude - location.getAltitude();}
+                distance = distance + location.getSpeed()*Timer.seconde;
+            }
+            else if(isFirst){
+                vitesseMax = location.getSpeed();
+                vitesseMin = location.getSpeed();
+                altitudeMax = location.getAltitude();
+                altitudeMin = location.getAltitude();
+                deniveleMax = 0;
+                isFirst = false;
+                b.setText(R.string.Accueil_bouton_clicked);
+            }
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+            altitude = location.getAltitude();
+            accuracy = location.getAccuracy();
+            vitesse = location.getSpeed();
+            Log.i("Localisation", "Lat: " + latitude + " Lon: " + longitude + " Alt: " + altitude + " acc: " + accuracy);
+
+        }
     }
 
     @Override

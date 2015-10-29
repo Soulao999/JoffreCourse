@@ -11,6 +11,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 
 public class Historique extends AppCompatActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -27,11 +31,24 @@ public class Historique extends AppCompatActivity
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
 
+
+        //Récupération de la liste des personnes
+        ArrayList<ActivityHistorique> listP = ActivityHistorique.getList(this);
+
+        //Création et initialisation de l'Adapter pour les personnes
+        ActiviteAdapter adapter = new ActiviteAdapter(this, listP);
+
+        //Récupération du composant ListView
+        ListView list = (ListView)findViewById(R.id.ListView);
+
+        //Initialisation de la liste avec les données
+        list.setAdapter(adapter);
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
     }
+
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
