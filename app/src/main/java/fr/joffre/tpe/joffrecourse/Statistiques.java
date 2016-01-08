@@ -6,16 +6,37 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.Calendar;
 
 public class Statistiques extends AppCompatActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private CharSequence mTitle;
+    private int TempsSemaine = 0;
+    private int TempsMois = 0;
+    private int TempsAnnee = 0;
+    private int TempsAll = 0;
+    private int DistanceSemaine = 0;
+    private int DistanceMois = 0;
+    private int DistanceAnnee = 0;
+    private int DistanceAll = 0;
+    private int CaloSemaine = 0;
+    private int CaloMois = 0;
+    private int CaloAnnee = 0;
+    private int CaloAll = 0;
+    private String date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +51,67 @@ public class Statistiques extends AppCompatActivity implements NavigationDrawerF
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+        Calendar calendrier = Calendar.getInstance();
+        int Mois = calendrier.get(Calendar.MONTH)+1;
+        int Jour =calendrier.get(Calendar.DAY_OF_MONTH);
+        int Annee = calendrier.get(Calendar.YEAR);
+        ArrayList<ActivityHistorique> listP = ActivityHistorique.getList(this);
+        listP.get(0);
+        for(int i = 0;i<listP.size();i++){
+            ActivityHistorique ah = listP.get(i);
+            String[] s= ah.getDate().split("/");
+            if(Annee == Integer.parseInt(s[2])
+                    && Mois == Integer.parseInt(s[1])
+                    && Jour-4 < Integer .parseInt(s[0])
+                    && Jour+4 > Integer.parseInt(s[0])){
+
+                TempsSemaine = TempsSemaine + (int) ah.getTemps();
+                DistanceSemaine = DistanceSemaine + (int)ah.getDistance();
+                CaloSemaine = CaloSemaine + ah.getCalories();
+            }
+            if(Annee == Integer.parseInt(s[2]) && Mois == Integer.parseInt(s[1])){
+                TempsMois = TempsMois + (int) ah.getTemps();
+                DistanceMois = DistanceMois + (int)ah.getDistance();
+                CaloMois = CaloMois + ah.getCalories();
+            }
+            if(Annee == Integer.parseInt(s[2])){
+                TempsAnnee = TempsAnnee + (int) ah.getTemps();
+                DistanceAnnee = DistanceAnnee + (int)ah.getDistance();
+                CaloAnnee = CaloAnnee + ah.getCalories();
+            }
+            TempsAll = TempsAll + (int) ah.getTemps();
+            DistanceAll = DistanceAll + (int)ah.getDistance();
+            CaloAll = CaloAll + ah.getCalories();
+        }
+        TextView b = (TextView) findViewById(R.id.CaloAll);
+        b.setText(String.valueOf(CaloAll));
+        TextView b1 = (TextView) findViewById(R.id.CaloAnnee);
+        b1.setText(String.valueOf(CaloAnnee));
+        TextView b2 = (TextView) findViewById(R.id.CaloMois);
+        b2.setText(String.valueOf(CaloMois));
+        TextView b3 = (TextView) findViewById(R.id.CaloSemaine);
+        b3.setText(String.valueOf(CaloSemaine));
+        TextView b4 = (TextView) findViewById(R.id.TempsAll);
+        b4.setText(String.valueOf(TempsAll/60));
+        TextView b5 = (TextView) findViewById(R.id.TempsAnnee);
+        b5.setText(String.valueOf(TempsAnnee/60));
+        TextView b6 = (TextView) findViewById(R.id.TempsMois);
+        b6.setText(String.valueOf(TempsMois/60));
+        TextView b7 = (TextView) findViewById(R.id.TempsSemaine);
+        b7.setText(String.valueOf(TempsSemaine/60));
+        TextView b8 = (TextView) findViewById(R.id.DistanceAll);
+        b8.setText(String.valueOf(DistanceAll));
+        TextView b9 = (TextView) findViewById(R.id.DistanceAnnee);
+        b9.setText(String.valueOf(DistanceAnnee));
+        TextView b10 = (TextView) findViewById(R.id.DistanceMois);
+        b10.setText(String.valueOf(DistanceMois));
+        TextView b11 = (TextView) findViewById(R.id.DistanceSemaine);
+        b11.setText(String.valueOf(DistanceSemaine));
+
+
+
+
     }
 
     @Override

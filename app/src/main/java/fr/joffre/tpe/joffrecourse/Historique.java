@@ -1,26 +1,37 @@
 package fr.joffre.tpe.joffrecourse;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
 public class Historique extends AppCompatActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, ActiviteAdapter.ActiviteAdapterListener {
 
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private CharSequence mTitle;
+    private TextView Temps;
+    private TextView Distance;
+    private TextView Vitesse;
+    private TextView VitesseMax;
+    private TextView VitesseMin;
+    private TextView AltitudeMax;
+    private TextView AltitudeMin;
+    private TextView Denivele;
+    private TextView Calories;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,19 +41,21 @@ public class Historique extends AppCompatActivity
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
-
-
         //Récupération de la liste des personnes
         ArrayList<ActivityHistorique> listP = ActivityHistorique.getList(this);
 
         //Création et initialisation de l'Adapter pour les personnes
         ActiviteAdapter adapter = new ActiviteAdapter(this, listP);
 
+        //Ecoute des évènements sur votre liste
+        adapter.addListener(this);
+
         //Récupération du composant ListView
         ListView list = (ListView)findViewById(R.id.ListView);
 
         //Initialisation de la liste avec les données
         list.setAdapter(adapter);
+
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
@@ -87,13 +100,46 @@ public class Historique extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            ActivityHistoriqueBDD Bdd= new ActivityHistoriqueBDD(this);
+            Bdd.open();
+            for(int i =0;i<Bdd.getLenght();i++){
+            Bdd.supprimer(i);
+            }
+            Bdd.close();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClickActivite(ActivityHistorique item, int position) {
+        Log.i("info", String.valueOf(item.getTemps()));
+        Dialog box = new Dialog(this);
+        box.setContentView(R.layout.histobox);
+        Temps = (TextView) box.findViewById(R.id.histoboxTemps);
+        Distance = (TextView) box.findViewById(R.id.histoboxDistance);
+        Vitesse = (TextView) box.findViewById(R.id.vitesse);
+        VitesseMax = (TextView) box.findViewById(R.id.vitesseMax);
+        VitesseMin = (TextView) box.findViewById(R.id.vitesseMin);
+        AltitudeMax = (TextView) box.findViewById(R.id.altitudeMax);
+        AltitudeMin = (TextView) box.findViewById(R.id.altitudeMin);
+        Denivele = (TextView) box.findViewById(R.id.Denivele);
+        Calories = (TextView) box.findViewById(R.id.Calories);
+        int i[] = Timer.convert((int)item.getTemps());
+        Temps.setText(i[0]+"h "+i[1]+"min "+i[2]+"sec");
+        Distance.setText(String.valueOf(item.getDistance()));
+        Vitesse.setText(String.valueOf(item.getVitesse()));
+        VitesseMax.setText(String.valueOf(item.getVitesseMax()));
+        VitesseMin.setText(String.valueOf(item.getVitesseMin()));
+        AltitudeMax.setText(String.valueOf(item.getAltitudeMax()));
+        AltitudeMin.setText(String.valueOf(item.getAltitudeMin()));
+        Denivele.setText(String.valueOf(item.getDeniveleMax()));
+        Calories.setText(String.valueOf(item.getCalories()));
+        box.setTitle(item.getDate());
+        box.show();
     }
 
     /**

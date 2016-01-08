@@ -1,24 +1,12 @@
 package fr.joffre.tpe.joffrecourse;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
-import android.provider.CalendarContract;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -32,15 +20,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.ImageView;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
-import static java.lang.Thread.sleep;
+
+
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks, View.OnClickListener, android.location.LocationListener {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, View.OnClickListener, android.location.LocationListener{
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -53,14 +42,17 @@ public class MainActivity extends AppCompatActivity
     private CharSequence mTitle;
 
     private Button b;
+    private ImageView iv;
     private double latitude;
     private double longitude;
     private double altitude;
     private float accuracy;
     private float vitesse;
+    private ArrayList alVitesse = new ArrayList();
     private float vitesseMax;
     private float vitesseMin;
     private int Time;
+    private int TimeTampon;
     private String date;
     private double altitudeMax;
     private double altitudeMin;
@@ -70,6 +62,8 @@ public class MainActivity extends AppCompatActivity
     static LocationManager lm;
     private boolean running = false;
     private boolean isFirst = true;
+    private Location loc;
+
 
 
     @Override
@@ -87,6 +81,8 @@ public class MainActivity extends AppCompatActivity
                 (DrawerLayout) findViewById(R.id.drawer_layout));
         b = (Button) findViewById(R.id.startbutton);
         b.setOnClickListener(this);
+        b.setBackgroundResource(R.drawable.animbouton);
+        iv = (ImageView) findViewById(R.id.imageStart);
     }
 
     @Override
@@ -160,7 +156,6 @@ public class MainActivity extends AppCompatActivity
         critere.setAltitudeRequired(true);
         critere.setBearingRequired(true);
         critere.setCostAllowed(false);
-        critere.setPowerRequirement(Criteria.POWER_HIGH);
         critere.setSpeedRequired(true);
         try {
             Log.i("Localisation", lm.getBestProvider(critere, true));
@@ -170,13 +165,10 @@ public class MainActivity extends AppCompatActivity
         String best = lm.getBestProvider(critere, false);
         lm.requestLocationUpdates(best, 10000, 1, this);
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 1, this);
-        lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 1, this);
+        //lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 1, this);
         Log.i("Localisation GPS", "Start localisation " + String.valueOf(lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)));
         Log.i("Localisation NETWORK", "Start localisation " + String.valueOf(lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)));
         Log.i("Localisation BEST", "Start localisation " + String.valueOf(lm.getLastKnownLocation(best)));
-        if(running){
-            b.setText(R.string.Accueil_bouton_clicked);
-        }
     }
 
     @Override
@@ -187,32 +179,42 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onClick(View v) {
         Timer t = new Timer("time");
+
         if(GpsEnabled == true){
             if(!running) {
                 running = true;
-                b.setText("GO !");
+                iv.setBackgroundResource(R.drawable.messagestop);
                 t.start();
                 Calendar calendrier = Calendar.getInstance();
                 int Mois = calendrier.get(Calendar.MONTH)+1;
                 date = String.valueOf(calendrier.get(Calendar.DAY_OF_MONTH) + "/" + String.valueOf(Mois) + "/" + String.valueOf(calendrier.get(Calendar.YEAR)));
+                b.setBackgroundResource(R.drawable.bouton);
             }
             else if(running){
                 t.arret();
+                iv.setBackgroundResource(R.drawable.messagestart);
                 Time = Timer.seconde;
                 //km
                 distance = distance/1000;
                 //km/h
                 vitesseMax = (float) (vitesseMax*(3.6));
                 vitesseMin = (float) (vitesseMin*(3.6));
+                int i =0;
+                while(i<alVitesse.size()){
+                    vitesse = vitesse + (float)alVitesse.get(i);
+                    i++;
+                }
+                vitesse = vitesse/i;
                 vitesse = (float) (vitesse*(3.6));
                 ActivityHistoriqueBDD Bdd= new ActivityHistoriqueBDD(this);
                 Bdd.open();
                 ActivityHistorique ah = new ActivityHistorique(date, Time, distance, vitesse, vitesseMax, vitesseMin, (float)altitudeMax, (float)altitudeMin, (float)deniveleMax, 80);
                 Bdd.ajouter(ah);
-                b.setText(R.string.Accueil_bouton);
                 Bdd.close();
                 Timer.seconde = 0;
+                isFirst = true;
                 running = false;
+                b.setBackgroundResource(R.drawable.bouton);
             }
         }
         else{
@@ -228,6 +230,7 @@ public class MainActivity extends AppCompatActivity
                 }
             })
             .show();
+            b.setBackgroundResource(R.drawable.bouton);
         }
     }
     @Override
@@ -237,31 +240,55 @@ public class MainActivity extends AppCompatActivity
                 //vitesse m/s
                 //altitude m
                 //distance m
-                if(vitesseMax<location.getSpeed()){vitesseMax = location.getSpeed();}
-                if(vitesseMin>location.getSpeed()){vitesseMin = location.getSpeed();}
-                if(altitudeMax<location.getAltitude()){altitudeMax = location.getAltitude();}
-                if(altitudeMin>location.getAltitude()){altitudeMin = location.getAltitude();}
-                if (altitude < location.getAltitude() & deniveleMax < location.getAltitude() - altitude) {deniveleMax = location.getAltitude() - altitude;}
-                if (altitude > location.getAltitude()& deniveleMax < altitude - location.getAltitude()) {deniveleMax = altitude - location.getAltitude();}
-                distance = distance + location.getSpeed()*Timer.seconde;
+                // if(location.getProvider() == LocationManager.GPS_PROVIDER){
+                     if(altitudeMax<location.getAltitude()){altitudeMax = location.getAltitude();}
+                     if(altitudeMin>location.getAltitude()){altitudeMin = location.getAltitude();}
+                     //distance = distance + location.getSpeed()*(Timer.seconde-TimeTampon);
+                     distance = distance + location.distanceTo(loc);
+                     alVitesse.add(location.getSpeed());
+                     if(vitesseMax<location.getSpeed()){vitesseMax = location.getSpeed();}
+                     if(vitesseMin>location.getSpeed()){vitesseMin = location.getSpeed();}
+                     if (altitude < location.getAltitude() & deniveleMax < location.getAltitude() - altitude) {deniveleMax = location.getAltitude() - altitude;}
+                     if (altitude > location.getAltitude()& deniveleMax < altitude - location.getAltitude()) {deniveleMax = altitude - location.getAltitude();}
+
+               /*  }
+                if(location.getProvider() == LocationManager.NETWORK_PROVIDER){
+                    distance = distance + (float) LatLonDistance(location.getLatitude(), location.getLongitude(),latitude, longitude);
+                    float i = (float)LatLonDistance(location.getLatitude(), location.getLongitude(),latitude, longitude)/(Timer.seconde-TimeTampon);
+                    alVitesse.add(i);
+                    if(vitesseMax<i){vitesseMax = i;}
+                    if(vitesseMin>i){vitesseMin = i;}
+                }*/
+                TimeTampon = Timer.seconde;
+                loc = location;
+
             }
             else if(isFirst){
-                vitesseMax = location.getSpeed();
-                vitesseMin = location.getSpeed();
-                altitudeMax = location.getAltitude();
-                altitudeMin = location.getAltitude();
+                //if(location.getProvider() == LocationManager.GPS_PROVIDER){
+                    vitesseMax = location.getSpeed();
+                    vitesseMin = location.getSpeed();
+                    altitudeMax = location.getAltitude();
+                    altitudeMin = location.getAltitude();
+                loc = location;
+                /*}
+                if(location.getProvider() == LocationManager.NETWORK_PROVIDER){
+                    vitesseMax = 0.0f;
+                    vitesseMin = 1000.0f;
+                    altitudeMax = 0.0f;
+                    altitudeMin = 20000.0f;
+                }*/
+
                 deniveleMax = 0;
                 isFirst = false;
-                b.setText(R.string.Accueil_bouton_clicked);
             }
+            altitude = location.getAltitude();
             latitude = location.getLatitude();
             longitude = location.getLongitude();
-            altitude = location.getAltitude();
             accuracy = location.getAccuracy();
-            vitesse = location.getSpeed();
-            Log.i("Localisation", "Lat: " + latitude + " Lon: " + longitude + " Alt: " + altitude + " acc: " + accuracy);
+            Log.i("Localisation", "Lat: " + latitude + " Lon: " + longitude + " Alt: " + altitude + " acc: " + accuracy );
 
         }
+        loc = location;
     }
 
     @Override
@@ -280,6 +307,20 @@ public class MainActivity extends AppCompatActivity
         Log.i("Localisation","Disabled");
         GpsEnabled = false;
     }
+    public double LatLonDistance(double lat1,double lng1, double lat2, double lng2){
+        double earthRadius = 6371.0; // km (or 3958.75 miles)
+        double dLat = Math.toRadians(lat2-lat1);
+        double dLng = Math.toRadians(lng2-lng1);
+        double sindLat = Math.sin(dLat / 2);
+        double sindLng = Math.sin(dLng / 2);
+        double a = Math.pow(sindLat, 2) + Math.pow(sindLng, 2)
+                * Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2));
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        double dist = earthRadius * c;
+
+        return dist;
+    }
+
     public static class PlaceholderFragment extends Fragment {
         /**
          * The fragment argument representing the section number for this
@@ -315,9 +356,7 @@ public class MainActivity extends AppCompatActivity
             ((MainActivity) activity).onSectionAttached(
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
+
+    }
     }
 
-
-
-
-}

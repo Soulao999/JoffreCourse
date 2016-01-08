@@ -61,7 +61,7 @@ public class ActivityHistoriqueBDD {
         //on ferme l'accès à la BDD
         bdd.close();
     }
-    public int getLenght(){
+    public static int getLenght(){
         return key;
     }
     public ActivityHistorique getActivity(long id){
@@ -90,4 +90,5 @@ public class ActivityHistoriqueBDD {
         //Si bug
         //context.deleteDatabase(TABLE_NAME);
     }
+
 }

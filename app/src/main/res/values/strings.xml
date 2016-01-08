@@ -11,12 +11,10 @@
 
     <string name="action_example">JoffreCourse</string>
 
-    <string name="action_settings">Options</string>
+    <string name="action_settings">Supprimer</string>
 
     <string name="Accueil_text">JoffreCourse est une application d\'entrainement sportif crée dans le cadre d\'un TPE</string>
-    <string name="Accueil_bouton">Commencer l\'activité</string>
     <string name="Accueil_erreurLocalisation">Réseau de localisation gps introuvable</string>
-    <string name="Accueil_bouton_clicked">Fin de l\'activité</string>
 
     <string name="Options_age">Age:</string>
     <string name="Options_poids">Poid(kg):</string>
@@ -29,4 +27,9 @@
     <string name="Options_erreurTaillePlus">Ohh Mon dieu un géant !!!</string>
     <string name="Options_erreurTailleMoins">Oh un minimoys :)</string>
     <string name="Options_enregistre">Vos informations ont été enrégistré avec succès</string>
+
+    <string name="Stats_semaine">Semaine</string>
+    <string name="Stats_Mois">Mois</string>
+    <string name="Stats_Annee">Année</string>
+    <string name="Stats_All">Tout</string>
 </resources>
