@@ -63,7 +63,11 @@ public class ActiviteAdapter extends BaseAdapter{
             int Valeur[] = Timer.convert((int) mListP.get(position).getTemps());
             String str = String.valueOf(Valeur[0])+"h"+String.valueOf(Valeur[1])+"m"+String.valueOf(Valeur[2])+"s";
             tv_Temps.setText(str);
-            tv_Distance.setText(String.valueOf(mListP.get(position).getDistance()));
+            float i = mListP.get(position).getDistance()*100;
+            int j = (int)i;
+            i = (float)j/100;
+            String str1 = String.valueOf(i)+"(km)";
+            tv_Distance.setText(str1);
 
             layoutItem.setTag(position);
             layoutItem.setOnClickListener(new View.OnClickListener() {

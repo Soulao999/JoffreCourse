@@ -19,7 +19,7 @@
         android:text="Temps"
         android:textSize="20dp"
         android:id="@+id/Temps"
-        android:layout_marginLeft="110dp"
+        android:layout_marginLeft="140dp"
         android:layout_marginTop="40dp"
         android:layout_alignParentTop="true" />
     <TextView
@@ -30,6 +30,22 @@
         android:textSize="20dp"
         android:id="@+id/Distance"
         android:layout_marginTop="40dp"
-        android:layout_marginLeft="5dp" />
+        android:layout_marginLeft="35dp" />
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/imageDistance"
+        android:background="@drawable/route"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="5dp"
+        />
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/imageTemps"
+        android:background="@drawable/chronometre"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="110dp"
+        />
 
 </RelativeLayout>

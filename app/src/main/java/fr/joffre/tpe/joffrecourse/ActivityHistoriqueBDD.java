@@ -2,8 +2,10 @@ package fr.joffre.tpe.joffrecourse;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -18,7 +20,6 @@ public class ActivityHistoriqueBDD {
     public static final String ACTIVITY_VITESSE_MIN = "VitesseMin";
     public static final String ACTIVITY_ALTITUDE_MAX = "AltitudeMax";
     public static final String ACTIVITY_ALTITUDE_MIN = "AltitudeMin";
-    public static final String ACTIVITY_DENIVELE_MAX = "DéniveléMax";
     public static final String ACTIVITY_CALORIES = "Calories";
 
     public static final String TABLE_NAME = "Activity";
@@ -39,7 +40,6 @@ public class ActivityHistoriqueBDD {
         values.put(ACTIVITY_VITESSE_MIN, ah.getVitesseMin());
         values.put(ACTIVITY_ALTITUDE_MAX, ah.getTemps());
         values.put(ACTIVITY_ALTITUDE_MIN, ah.getAltitudeMin());
-        values.put(ACTIVITY_DENIVELE_MAX, ah.getDeniveleMax());
         values.put(ACTIVITY_CALORIES, ah.getCalories());
         //on insère l'objet dans la BDD via le ContentValues
         bdd.insert(TABLE_NAME, null, values);
@@ -79,12 +79,16 @@ public class ActivityHistoriqueBDD {
         ah.setVitesseMin(c.getFloat(6));
         ah.setAltitudeMax(c.getFloat(7));
         ah.setAltitudeMin(c.getFloat(8));
-        ah.setDeniveleMax(c.getFloat(9));
-        ah.setCalories(c.getInt(10));
+        ah.setCalories(c.getInt(9));
         c.close();
         return ah;
     }
     public ActivityHistoriqueBDD(Context context) {
+        if(Historique.supprimer){
+            //Si bug
+            context.deleteDatabase(TABLE_NAME);
+            Historique.supprimer = false;
+        }
         //On créer la BDD et sa table
         Database = new DatabaseHandler(context, TABLE_NAME, null, VERSION_BDD);
         //Si bug

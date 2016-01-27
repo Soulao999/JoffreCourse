@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -21,6 +23,7 @@ import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,7 +32,7 @@ import java.util.Calendar;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks, View.OnClickListener, android.location.LocationListener{
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, View.OnClickListener, android.location.LocationListener {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity
 
     private Button b;
     private ImageView iv;
+    private static TextView tv;
     private double latitude;
     private double longitude;
     private double altitude;
@@ -56,13 +60,15 @@ public class MainActivity extends AppCompatActivity
     private String date;
     private double altitudeMax;
     private double altitudeMin;
-    private double deniveleMax;
-    private float distance;
+    public static float distance = 0;
     private boolean GpsEnabled = true;
     static LocationManager lm;
     private boolean running = false;
     private boolean isFirst = true;
     private Location loc;
+    public static int Calories = 0;
+    final Object synchLock = new Object();
+    private SharedPreferences preferences;
 
 
 
@@ -83,6 +89,8 @@ public class MainActivity extends AppCompatActivity
         b.setOnClickListener(this);
         b.setBackgroundResource(R.drawable.animbouton);
         iv = (ImageView) findViewById(R.id.imageStart);
+        tv = (TextView) findViewById(R.id.Acceuil_textView);
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
     }
 
     @Override
@@ -179,12 +187,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onClick(View v) {
         Timer t = new Timer("time");
-
         if(GpsEnabled == true){
             if(!running) {
                 running = true;
-                iv.setBackgroundResource(R.drawable.messagestop);
+                Fonctionne f = new Fonctionne("test");
                 t.start();
+                f.start();
+                iv.setBackgroundResource(R.drawable.messagestop);
                 Calendar calendrier = Calendar.getInstance();
                 int Mois = calendrier.get(Calendar.MONTH)+1;
                 date = String.valueOf(calendrier.get(Calendar.DAY_OF_MONTH) + "/" + String.valueOf(Mois) + "/" + String.valueOf(calendrier.get(Calendar.YEAR)));
@@ -192,6 +201,7 @@ public class MainActivity extends AppCompatActivity
             }
             else if(running){
                 t.arret();
+                running = false;
                 iv.setBackgroundResource(R.drawable.messagestart);
                 Time = Timer.seconde;
                 //km
@@ -206,14 +216,14 @@ public class MainActivity extends AppCompatActivity
                 }
                 vitesse = vitesse/i;
                 vitesse = (float) (vitesse*(3.6));
+                Calories = (int) (distance*preferences.getInt(Options.POIDS,0));
                 ActivityHistoriqueBDD Bdd= new ActivityHistoriqueBDD(this);
                 Bdd.open();
-                ActivityHistorique ah = new ActivityHistorique(date, Time, distance, vitesse, vitesseMax, vitesseMin, (float)altitudeMax, (float)altitudeMin, (float)deniveleMax, 80);
+                ActivityHistorique ah = new ActivityHistorique(date, Time, distance, vitesse, vitesseMax, vitesseMin, (float)altitudeMax, (float)altitudeMin, Calories);
                 Bdd.ajouter(ah);
                 Bdd.close();
                 Timer.seconde = 0;
                 isFirst = true;
-                running = false;
                 b.setBackgroundResource(R.drawable.bouton);
             }
         }
@@ -240,52 +250,29 @@ public class MainActivity extends AppCompatActivity
                 //vitesse m/s
                 //altitude m
                 //distance m
-                // if(location.getProvider() == LocationManager.GPS_PROVIDER){
                      if(altitudeMax<location.getAltitude()){altitudeMax = location.getAltitude();}
                      if(altitudeMin>location.getAltitude()){altitudeMin = location.getAltitude();}
-                     //distance = distance + location.getSpeed()*(Timer.seconde-TimeTampon);
                      distance = distance + location.distanceTo(loc);
                      alVitesse.add(location.getSpeed());
                      if(vitesseMax<location.getSpeed()){vitesseMax = location.getSpeed();}
                      if(vitesseMin>location.getSpeed()){vitesseMin = location.getSpeed();}
-                     if (altitude < location.getAltitude() & deniveleMax < location.getAltitude() - altitude) {deniveleMax = location.getAltitude() - altitude;}
-                     if (altitude > location.getAltitude()& deniveleMax < altitude - location.getAltitude()) {deniveleMax = altitude - location.getAltitude();}
-
-               /*  }
-                if(location.getProvider() == LocationManager.NETWORK_PROVIDER){
-                    distance = distance + (float) LatLonDistance(location.getLatitude(), location.getLongitude(),latitude, longitude);
-                    float i = (float)LatLonDistance(location.getLatitude(), location.getLongitude(),latitude, longitude)/(Timer.seconde-TimeTampon);
-                    alVitesse.add(i);
-                    if(vitesseMax<i){vitesseMax = i;}
-                    if(vitesseMin>i){vitesseMin = i;}
-                }*/
                 TimeTampon = Timer.seconde;
                 loc = location;
 
             }
             else if(isFirst){
-                //if(location.getProvider() == LocationManager.GPS_PROVIDER){
                     vitesseMax = location.getSpeed();
                     vitesseMin = location.getSpeed();
                     altitudeMax = location.getAltitude();
                     altitudeMin = location.getAltitude();
                 loc = location;
-                /*}
-                if(location.getProvider() == LocationManager.NETWORK_PROVIDER){
-                    vitesseMax = 0.0f;
-                    vitesseMin = 1000.0f;
-                    altitudeMax = 0.0f;
-                    altitudeMin = 20000.0f;
-                }*/
-
-                deniveleMax = 0;
                 isFirst = false;
             }
             altitude = location.getAltitude();
             latitude = location.getLatitude();
             longitude = location.getLongitude();
             accuracy = location.getAccuracy();
-            Log.i("Localisation", "Lat: " + latitude + " Lon: " + longitude + " Alt: " + altitude + " acc: " + accuracy );
+            Log.i("Localisation", "Lat: " + latitude + " Lon: " + longitude + " Alt: " + altitude + " acc: " + accuracy);
 
         }
         loc = location;
@@ -298,13 +285,13 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onProviderEnabled(String provider) {
-        Log.i("Localisation","Enabled");
+        Log.i("Localisation", "Enabled");
         GpsEnabled = true;
     }
 
     @Override
     public void onProviderDisabled(String provider) {
-        Log.i("Localisation","Disabled");
+        Log.i("Localisation", "Disabled");
         GpsEnabled = false;
     }
     public double LatLonDistance(double lat1,double lng1, double lat2, double lng2){
@@ -321,6 +308,31 @@ public class MainActivity extends AppCompatActivity
         return dist;
     }
 
+
+    public class Fonctionne extends Thread{
+        public Fonctionne(String name){
+            super(name);
+        }
+        public void run(){
+            while(running){
+                synchronized (synchLock){try {
+                    synchLock.wait(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                }
+                Timer.convert(Timer.seconde);
+                Calories = (int) ((distance/1000)*preferences.getInt(Options.POIDS,0));
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        tv.setText(Timer.tim+"          Distance: "+distance/1000 + "(km)           Calories: "+Calories+"(kcal)");
+
+                    }
+                });}
+
+            }
+    }
     public static class PlaceholderFragment extends Fragment {
         /**
          * The fragment argument representing the section number for this
@@ -357,6 +369,8 @@ public class MainActivity extends AppCompatActivity
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
 
+
     }
     }
+
 

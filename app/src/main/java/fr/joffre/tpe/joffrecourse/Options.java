@@ -55,6 +55,7 @@ public class Options extends AppCompatActivity
         b = (Button) findViewById(R.id.buttonOptionValider);
         b.setOnClickListener(this);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        Log.i("Preférences", String.valueOf(this));
         Log.i("préférences", String.valueOf(preferences.getAll()));
         try{
             editTextAge.setText(String.valueOf(preferences.getInt(AGE, 0)));

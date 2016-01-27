@@ -1,7 +1,9 @@
 package fr.joffre.tpe.joffrecourse;
 
 import android.app.Dialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -32,6 +34,7 @@ public class Historique extends AppCompatActivity
     private TextView AltitudeMin;
     private TextView Denivele;
     private TextView Calories;
+    public static boolean supprimer = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +111,7 @@ public class Historique extends AppCompatActivity
             Bdd.supprimer(i);
             }
             Bdd.close();
+            supprimer = true;
             return true;
         }
 
@@ -126,18 +130,16 @@ public class Historique extends AppCompatActivity
         VitesseMin = (TextView) box.findViewById(R.id.vitesseMin);
         AltitudeMax = (TextView) box.findViewById(R.id.altitudeMax);
         AltitudeMin = (TextView) box.findViewById(R.id.altitudeMin);
-        Denivele = (TextView) box.findViewById(R.id.Denivele);
         Calories = (TextView) box.findViewById(R.id.Calories);
         int i[] = Timer.convert((int)item.getTemps());
         Temps.setText(i[0]+"h "+i[1]+"min "+i[2]+"sec");
-        Distance.setText(String.valueOf(item.getDistance()));
-        Vitesse.setText(String.valueOf(item.getVitesse()));
-        VitesseMax.setText(String.valueOf(item.getVitesseMax()));
-        VitesseMin.setText(String.valueOf(item.getVitesseMin()));
-        AltitudeMax.setText(String.valueOf(item.getAltitudeMax()));
-        AltitudeMin.setText(String.valueOf(item.getAltitudeMin()));
-        Denivele.setText(String.valueOf(item.getDeniveleMax()));
-        Calories.setText(String.valueOf(item.getCalories()));
+        Distance.setText(String.valueOf(item.getDistance()) + "(km)");
+        Vitesse.setText(String.valueOf(item.getVitesse())+"(km/h)");
+        VitesseMax.setText(String.valueOf(item.getVitesseMax())+"(km/h)");
+        VitesseMin.setText(String.valueOf(item.getVitesseMin())+"(km/h)");
+        AltitudeMax.setText(String.valueOf(item.getAltitudeMax())+"(m)");
+        AltitudeMin.setText(String.valueOf(item.getAltitudeMin())+"(m)");
+        Calories.setText(String.valueOf(item.getCalories())+"(kcal)");
         box.setTitle(item.getDate());
         box.show();
     }

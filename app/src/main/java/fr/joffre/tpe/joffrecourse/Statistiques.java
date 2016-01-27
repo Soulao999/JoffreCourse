@@ -85,29 +85,29 @@ public class Statistiques extends AppCompatActivity implements NavigationDrawerF
             CaloAll = CaloAll + ah.getCalories();
         }
         TextView b = (TextView) findViewById(R.id.CaloAll);
-        b.setText(String.valueOf(CaloAll));
+        b.setText(String.valueOf(CaloAll) + "(kcal)");
         TextView b1 = (TextView) findViewById(R.id.CaloAnnee);
-        b1.setText(String.valueOf(CaloAnnee));
+        b1.setText(String.valueOf(CaloAnnee)+ "(kcal)");
         TextView b2 = (TextView) findViewById(R.id.CaloMois);
-        b2.setText(String.valueOf(CaloMois));
+        b2.setText(String.valueOf(CaloMois)+ "(kcal)");
         TextView b3 = (TextView) findViewById(R.id.CaloSemaine);
-        b3.setText(String.valueOf(CaloSemaine));
+        b3.setText(String.valueOf(CaloSemaine)+ "(kcal)");
         TextView b4 = (TextView) findViewById(R.id.TempsAll);
-        b4.setText(String.valueOf(TempsAll/60));
+        b4.setText(String.valueOf(Timer.convert(TempsAll)[0]+"h"+Timer.convert(TempsAll)[1]+"min"));
         TextView b5 = (TextView) findViewById(R.id.TempsAnnee);
-        b5.setText(String.valueOf(TempsAnnee/60));
+        b5.setText(String.valueOf(Timer.convert(TempsAnnee)[0]+"h"+Timer.convert(TempsAnnee)[1]+"min"));
         TextView b6 = (TextView) findViewById(R.id.TempsMois);
-        b6.setText(String.valueOf(TempsMois/60));
+        b6.setText(String.valueOf(Timer.convert(TempsMois)[0]+"h"+Timer.convert(TempsMois)[1]+"min"));
         TextView b7 = (TextView) findViewById(R.id.TempsSemaine);
-        b7.setText(String.valueOf(TempsSemaine/60));
+        b7.setText(String.valueOf(Timer.convert(TempsSemaine)[0]+"h"+Timer.convert(TempsSemaine)[1]+"min"));
         TextView b8 = (TextView) findViewById(R.id.DistanceAll);
-        b8.setText(String.valueOf(DistanceAll));
+        b8.setText(String.valueOf(DistanceAll)+ "(km)");
         TextView b9 = (TextView) findViewById(R.id.DistanceAnnee);
-        b9.setText(String.valueOf(DistanceAnnee));
+        b9.setText(String.valueOf(DistanceAnnee)+ "(km)");
         TextView b10 = (TextView) findViewById(R.id.DistanceMois);
-        b10.setText(String.valueOf(DistanceMois));
+        b10.setText(String.valueOf(DistanceMois)+ "(km)");
         TextView b11 = (TextView) findViewById(R.id.DistanceSemaine);
-        b11.setText(String.valueOf(DistanceSemaine));
+        b11.setText(String.valueOf(DistanceSemaine)+ "(km)");
 
 
 

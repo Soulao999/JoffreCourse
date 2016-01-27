@@ -13,7 +13,7 @@
 
     <string name="action_settings">Supprimer</string>
 
-    <string name="Accueil_text">JoffreCourse est une application d\'entrainement sportif crée dans le cadre d\'un TPE</string>
+    <string name="Accueil_text">JoffreCourse la meilleure application d\'entrainement sportif</string>
     <string name="Accueil_erreurLocalisation">Réseau de localisation gps introuvable</string>
 
     <string name="Options_age">Age:</string>

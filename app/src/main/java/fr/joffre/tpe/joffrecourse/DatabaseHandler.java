@@ -15,7 +15,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String ACTIVITY_VITESSE_MIN = "VitesseMin";
     public static final String ACTIVITY_ALTITUDE_MAX = "AltitudeMax";
     public static final String ACTIVITY_ALTITUDE_MIN = "AltitudeMin";
-    public static final String ACTIVITY_DENIVELE_MAX = "DéniveléMax";
     public static final String ACTIVITY_CALORIES = "Calories";
 
     public static final String TABLE_NAME = "Activity";
@@ -30,7 +29,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     ACTIVITY_VITESSE_MIN +" REAL, "+
                     ACTIVITY_ALTITUDE_MAX +" REAL, "+
                     ACTIVITY_ALTITUDE_MIN +" REAL, "+
-                    ACTIVITY_DENIVELE_MAX +" REAL, "+
                     ACTIVITY_CALORIES + " INTEGER);";
     public static final String METIER_TABLE_DROP = "DROP TABLE IF EXISTS " + TABLE_NAME + ";";
 

@@ -1,12 +1,11 @@
 package fr.joffre.tpe.joffrecourse;
 
-import android.util.Log;
-import android.widget.Button;
-
+import java.lang.Runnable;
 
 public class Timer extends Thread{
     public static int seconde = 0;
     public static boolean running = true;
+    public static String tim;
     public Timer(String name) {
         super(name);
     }
@@ -28,6 +27,7 @@ public class Timer extends Thread{
         int h = min/60;
         min = min%60;
         int Result[] = {h,min,sec};
+        tim = h+"h"+min+"min"+sec+"sec";
         return Result;
     }
     public static void arret(){

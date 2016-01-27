@@ -14,10 +14,9 @@ public class ActivityHistorique {
     private float vitesseMin;
     private float altitudeMax;
     private float altitudeMin;
-    private float deniveleMax;
     private int calories;
 
-    public ActivityHistorique(String date, float temps, float distance, float vitesse, float vitesseMax, float vitesseMin, float altitudeMax, float altitudeMin, float deniveleMax, int calories) {
+    public ActivityHistorique(String date, float temps, float distance, float vitesse, float vitesseMax, float vitesseMin, float altitudeMax, float altitudeMin, int calories) {
         this.date = date;
         this.temps = temps;
         this.distance =distance;
@@ -26,7 +25,6 @@ public class ActivityHistorique {
         this.vitesseMin = vitesseMin;
         this.altitudeMax = altitudeMax;
         this.altitudeMin = altitudeMin;
-        this.deniveleMax = deniveleMax;
         this.calories = calories;
 
     }
@@ -95,13 +93,6 @@ public class ActivityHistorique {
     public void setAltitudeMin(float altitudeMin) {
         this.altitudeMin = altitudeMin;
     }
-    public float getDeniveleMax() {
-        return deniveleMax;
-    }
-
-    public void setDeniveleMax(float deniveleMax) {
-        this.deniveleMax = deniveleMax;
-    }
     public int getCalories() {
         return calories;
     }
@@ -112,8 +103,7 @@ public class ActivityHistorique {
 
     public String toString(){
         return "ID: "+ id +" Date: "+ date + " Temps: " + temps + " Distance: "+distance+" Vitesse: "+ vitesse +
-                " VitesseMax: "+vitesseMax+" VitesseMin: "+vitesseMin+" AltitudeMax: "+altitudeMax +" AltitudeMin: "+ altitudeMin+
-                " DéniveléMax: "+deniveleMax+" Calories: "+calories;
+                " VitesseMax: "+vitesseMax+" VitesseMin: "+vitesseMin+" AltitudeMax: "+altitudeMax +" AltitudeMin: "+ altitudeMin+" Calories: "+calories;
     }
     public static ArrayList<ActivityHistorique> getList(Context context) {
         ArrayList<ActivityHistorique> listPers = new ArrayList<ActivityHistorique>();
